@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "@testing-library/react": "^16.1.0"
+    "@testing-library/react": "^16.1.0",
+    "colornames": "^1.1.1"
   }
 }

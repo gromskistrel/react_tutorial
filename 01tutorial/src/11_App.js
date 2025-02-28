@@ -4,19 +4,34 @@ import AddItem from './9_AddItem'
 import Content from './8_Content';
 import Footer from './8_Footer'
 import SearchItem from './9_SearchItem'
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 
 function App() {
-  const [items, setItems] = useState(JSON.parse(localStorage.getItem('shoppinglist')));
-  
+  const [items, setItems] = useState(JSON.parse(localStorage.getItem('shoppinglist')) || []);
   const [newItem, setNewItem] = useState ('')
   const [search, setSearch] = useState ('')
+  console.log('BeforeUseEffect')
 
+  useEffect(() => {
+    // this runs every time a component renders
+    console.log('InsideUseEffect') // It is asynchronous, it's running after everything renders
+    // console.log('during load time')
+  }, [items]) // with [] it only renders at load time
+  // [] is the dependency, so if the dependency changes than it runs
+  // if you put [items], it will change when items changes (so when adding or removing items)
 
-  const setAndSaveItems = (newItems) => {
-      setItems(newItems);
-      localStorage.setItem('shoppinglist', JSON.stringify(newItems))
-  }
+// example of use
+  useEffect(() => {
+    //setItems(JSON.parse(localStorage.getItem('shoppinglist')) || []) },[])
+    localStorage.setItem('shoppinglist', JSON.stringify(items));
+  }, [])
+
+  console.log('AfterUseEffect')
+
+  useEffect(() => {
+    localStorage.setItem('shoppinglist', JSON.stringify(items));
+  }, [items])
+
 
   const addItem = (item) => {
       // one way (not to my liking)
@@ -25,17 +40,17 @@ function App() {
       const id = items.length ? items.reduce((max, item) => (item.id > max ? item.id : max), 0)+1 : 1;
       const myNewItem = {id, checked: false, item};
       const listItems = [...items, myNewItem]
-      setAndSaveItems(listItems)
+      setItems(listItems)
   }
 
   const handleCheck = (id) => {
         const listItems = items.map((item) => item.id === id ? { ...item, checked: !item.checked} : item)
-        setAndSaveItems(listItems)
+        setItems(listItems)
     }
 
     const handleDelete = (id) => {
         const listItems = items.filter((item) => item.id !== id)
-        setAndSaveItems(listItems)
+        setItems(listItems)
     }
 
     const handleSubmit = (e) => {
